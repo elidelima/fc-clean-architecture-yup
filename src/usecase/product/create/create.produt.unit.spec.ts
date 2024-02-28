@@ -37,7 +37,7 @@ describe('Unit test create product use case', () => {
     inputWhitoutId.id = '';
 
     await expect(usecase.execute(inputWhitoutId)).rejects.toThrow(
-      'Id is required'
+      'product: Id is required'
     );
   });
 
@@ -49,7 +49,20 @@ describe('Unit test create product use case', () => {
     inputWhitoutName.name = '';
 
     await expect(usecase.execute(inputWhitoutName)).rejects.toThrow(
-      'Name is required'
+      'product: Name is required'
+    );
+  });
+
+  it('should throw an error when id and name are missing', async () => {
+    const productRepository = MockRepository();
+    const usecase = new CreateProductUseCase(productRepository);
+
+    const inputWhitoutNameAndId = { ...input };
+    inputWhitoutNameAndId.name = '';
+    inputWhitoutNameAndId.id = '';
+
+    await expect(usecase.execute(inputWhitoutNameAndId)).rejects.toThrow(
+      'product: Id is required,product: Name is required'
     );
   });
 
@@ -61,7 +74,22 @@ describe('Unit test create product use case', () => {
     inputWhitoutPrice.price = -1;
 
     await expect(usecase.execute(inputWhitoutPrice)).rejects.toThrow(
-      'Price must be greater than zero'
+      'product: Price must be greater than zero'
+    );
+  });
+
+  it('should throw an error when id and name are missing and price is invalid', async () => {
+    const productRepository = MockRepository();
+    const usecase = new CreateProductUseCase(productRepository);
+
+    const invalidInput = {
+      id: '',
+      name: '',
+      price: -1,
+    };
+
+    await expect(usecase.execute(invalidInput)).rejects.toThrow(
+      'product: Id is required,product: Name is required,product: Price must be greater than zero'
     );
   });
 });
